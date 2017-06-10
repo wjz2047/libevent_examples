@@ -38,8 +38,13 @@ void http_request_done(struct evhttp_request *req, void *arg)
 {
     struct evhttp_request *origin_req = (struct evhttp_request*)arg;
     
-    
+    struct evkeyvalq *headers = evhttp_request_get_input_headers(req);
+    struct evkeyval *header;
+    for (header = headers->tqh_first; header; header = header->next.tqe_next) {
+        evhttp_add_header(origin_req->output_headers, header->key, header->value);
+    }
     struct evbuffer *buf = evhttp_request_get_input_buffer(req);
+    // WARNNING: can't send reply to origin_req twice!!!
     evhttp_send_reply(origin_req, req->response_code, req->response_code_line, buf);
     
     printf("proxy done\n");
