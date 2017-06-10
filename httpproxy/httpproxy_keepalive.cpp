@@ -111,7 +111,8 @@ void http_request_cb(struct evhttp_request *req, void *arg) {
     for (int i = 0; i < dsp_count; i++) {
         struct evhttp_request *new_req = evhttp_request_new(http_request_done, req);
         
-        evhttp_add_header(new_req->output_headers, "Host",  hosts[i]);
+        evhttp_add_header(new_req->output_headers, "Host", hosts[i]);
+        evhttp_add_header(new_req->output_headers, "Connection", "keep-alive");
         evbuffer_add(new_req->output_buffer, data, datalen);
         
         evhttp_make_request(conns[i], new_req, EVHTTP_REQ_POST, "/");

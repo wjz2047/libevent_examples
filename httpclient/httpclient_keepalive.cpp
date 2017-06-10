@@ -142,6 +142,7 @@ void cmd_msg_cb(int fd, short events, void *arg) {
             struct evhttp_request *req = evhttp_request_new(http_request_done, main_base);
             
             evhttp_add_header(req->output_headers, "Host", host);
+            evhttp_add_header(req->output_headers, "Connection", "keep-alive");
             
             struct evbuffer *evb = evbuffer_new();
             evbuffer_add_printf(evb, "conn_index %d req_index %d, content: %s\n",
